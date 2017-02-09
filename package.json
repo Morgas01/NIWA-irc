@@ -1,0 +1,14 @@
+{
+  "name": "XDCC-irc",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Morgas01/NIWA-irc.git"
+  },
+  "engine": {
+    "node": ">=4.0.0"
+  },
+  "dependencies": {
+    "irc": "^0.5.2"
+  }
+}
