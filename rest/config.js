@@ -12,17 +12,21 @@ module.exports=µ.getModule("configManager")({
 	"networks":{
 		type:"map",
 		model:{
+			"nickname":{
+				type:"string",
+				pattern:/[a-z_\-\[\]\\^{}|`][a-z0-9_\-\[\]\\^{}|`]*/i
+			},
 			"password":"string",
 			"auto connect":{
 				type:"boolean",
 				default:false
 			},
-			"join commands":{
-				model:[{
+			"join commands":[
+				{
 					type:"map",
 					model:"string"
-				}]
-			},
+				}
+			],
 			"DCC folder":"string",
 			"channels":{
 				type:"map",
