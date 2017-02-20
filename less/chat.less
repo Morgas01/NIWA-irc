@@ -1,0 +1,21 @@
+.Chat {
+	display:flex;
+	flex-direction:column;
+	.scrollContainer {
+		flex-grow:1;
+		display:flex;
+		flex-direction:row;
+		align-items:flex-end;
+
+		.username
+		{
+			&::after {
+				content:" : ";
+			}
+			white-space:nowrap;
+		}
+		.text:last-child {
+			width:100%;
+		}
+	}
+}

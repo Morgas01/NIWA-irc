@@ -1,0 +1,15 @@
+.tabs.network {
+	.tabs-scope();
+	flex-direction:column-reverse;
+	& > header {
+		 & > * {
+			border-width:0px 1px 1px;
+			border-radius:0 0 @tabBorderRadius @tabBorderRadius;
+		}
+		& + * {
+			border-radius: @contentBorderRadius @contentBorderRadius 0 0;
+		}
+	}
+	@import "Chat";
+	@import "channelChat";
+}
