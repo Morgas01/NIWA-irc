@@ -1,3 +1,19 @@
 .Chat.Channel {
-
+	.tabs-scope();
+	.topic,.userList  {
+		border: 1px solid;
+		padding:1ex;
+		.border-color();
+		margin: 0 .1em;
+	}
+	.topic {
+		border-radius: @contentBorderRadius @contentBorderRadius 0 @contentBorderRadius;
+	}
+	.userList {
+		border-top-width:0;
+	}
+	.wrapper {
+		flex-grow:1;
+		display:flex;
+	}
 }

@@ -4,6 +4,8 @@
 
 	//SC=SC({});
 
+	var insertHelper=document.createDocumentFragment();
+
 	var ChannelChat=µ.Class(Chat,
 	{
 		init:function()
@@ -11,9 +13,16 @@
 			this.mega();
 			this.container.classList.add("Channel");
 			this.topic=document.createElement("div");
+			this.topic.classList.add("topic");
 			this.userList=document.createElement("div");
+			this.userList.classList.add("userList");
+
 			this.container.insertBefore(this.topic,this.container.firstElementChild);
-			this.container.appendChild(this.userList);
+			var wrapper=document.createElement("div");
+			wrapper.classList.add("wrapper");
+			this.container.insertBefore(wrapper,this.input);
+			wrapper.appendChild(this.scrollContainer);
+			wrapper.appendChild(this.userList);
 		},
 		setTopic:function(topic)
 		{
@@ -22,6 +31,15 @@
 		},
 		setUserList:function(userList)
 		{
+			while(this.userList.firstChild)this.userList.firstChild.remove();
+			userList.sort();
+			for(var user of userList)
+			{
+				var div=document.createElement("div");
+				div.textContent=user;
+				insertHelper.appendChild(div);
+			}
+			this.userList.appendChild(insertHelper);
 		}
 	});
 

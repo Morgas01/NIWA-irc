@@ -16,7 +16,7 @@
 		},
 		targetIsChannel:function(target)
 		{
-			return /^#|$/.test(target);
+			return /^[#\$]/.test(target);
 		},
 		isChannelTarget:function(message)
 		{
