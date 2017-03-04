@@ -88,5 +88,14 @@ module.exports={
 				addMessage(param.data.host,credentials.nickname,"testUser","private answer");
 			});
 		}
+	},
+	message:function()
+	{
+	},
+	join:function()
+	{
+	},
+	whois:function()
+	{
 	}
 }

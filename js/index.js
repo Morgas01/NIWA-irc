@@ -6,7 +6,8 @@
 
 	SC=SC({
 		rq:"request",
-		NetworkTab:"NetworkTab"
+		NetworkTab:"NetworkTab",
+		help:"help"
 	});
 
 	var networkMap=new WeakMap();
@@ -69,6 +70,8 @@
 		network.addMessage(message);
 	}
 
+
+
 	var es=new EventSource("event/irc");
 	window.addEventListener("beforeunload",function(){es.close()})
 	es.addEventListener("error",function(error)
@@ -98,6 +101,67 @@
 	es.addEventListener("message",function(event)
 	{
 		addMessage(JSON.parse(event.data));
+	});
+
+
+
+	var actions={
+		jump:function(){},
+		config:function(){},
+		help:()=>SC.help(),
+	};
+
+	actionize(actions,document.getElementById("actions"));
+
+	networkTabs.addEventListener("chatCommand",function(event)
+	{
+		var activeNetwork=networkTabs.getActive();
+		var chats=networkTabs.getTab(activeNetwork);
+
+		var command=event.detail.command.toLowerCase();
+
+		var data={
+			network:activeNetwork.textContent,
+			target:chats.getActive().textContent,
+			value:event.detail.value,
+		};
+		switch(command)
+		{
+			case "help":
+				requestAnimationFrame( // decouple keydown event for autofocus in help dialog
+					actions.help
+				);
+				return;
+			case "msg":
+				var match=data.value.match(/^(\S+)\s+(.*)/);
+				if(!match)
+				{
+					//TODO
+				}
+				else
+				{
+					data.target=match[1];
+					data.value=match[2];
+				}
+			case "say":
+				command="message";
+				break;
+			case "join":
+			case "whois":
+				data.target=data.value;
+				data.value=null;
+				break;
+			default:
+				//TODO
+				µ.logger.warn(`unknown command: ${command}`);
+				return;
+		}
+
+		SC.rq({
+			url:"rest/irc/"+command,
+			data:JSON.stringify(data)
+		})
+		.catch(µ.logger.error);
 	});
 
 })(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

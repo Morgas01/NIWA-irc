@@ -63,6 +63,23 @@
 			if(event.key=='Enter')
 			{
 				//TODO
+				var match=this.input.value.match(/^\/(\S+)\s*(.*)$/);
+				var detail={
+					command:"say",
+					value:null
+				};
+				if(match)
+				{
+					detail.command=match[1];
+					detail.value=match[2];
+				}
+				else detail.value=this.input.value;
+
+				this.input.dispatchEvent(new CustomEvent("chatCommand",{
+					bubbles:true,
+					detail:detail
+				}));
+
 				this.input.value="";
 			}
 		}
