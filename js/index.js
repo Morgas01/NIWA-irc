@@ -7,7 +7,8 @@
 	SC=SC({
 		rq:"request",
 		NetworkTab:"NetworkTab",
-		help:"help"
+		help:"help",
+		configDialog:"configDialog"
 	});
 
 	var networkMap=new WeakMap();
@@ -107,7 +108,7 @@
 
 	var actions={
 		jump:function(){},
-		config:function(){},
+		config:()=>SC.configDialog(),
 		help:()=>SC.help(),
 	};
 

@@ -1,8 +1,12 @@
+
+var NICK_PATTERN=/[a-zA-Z_\-\[\]\\^{}|`][a-zA-Z0-9_\-\[\]\\^{}|`]*/;
+NICK_PATTERN.toJSON=RegExp.prototype.toString; // for serialization
+
 module.exports=µ.getModule("configManager")({
 
 	"nickname":{
 		type:"string",
-		pattern:/[a-z_\-\[\]\\^{}|`][a-z0-9_\-\[\]\\^{}|`]*/i
+		pattern:NICK_PATTERN
 	},
 	"auto connect":{
 		type:"boolean",
@@ -14,14 +18,14 @@ module.exports=µ.getModule("configManager")({
 		model:{
 			"nickname":{
 				type:"string",
-				pattern:/[a-z_\-\[\]\\^{}|`][a-z0-9_\-\[\]\\^{}|`]*/i
+				pattern:NICK_PATTERN
 			},
 			"password":"string",
 			"auto connect":{
 				type:"boolean",
 				default:false
 			},
-			"join commands":[
+			"connect commands":[
 				{
 					type:"map",
 					model:"string"
