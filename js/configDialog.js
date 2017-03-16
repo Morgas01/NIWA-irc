@@ -15,11 +15,35 @@
 		SC.rq({
 			url:"rest/config",
 			data:JSON.stringify({
-				key:event.detail.path.concat(event.detail.key),
+				path:event.detail.path.concat(event.detail.key),
 				value:event.detail.value
 			})
 		});
-	})
+	});
+	configwrapper.addEventListener("formAdd",function(event)
+	{
+		SC.rq({
+			url:"rest/config",
+			method:"PUT",
+			data:JSON.stringify({
+				path:event.detail.path,
+				key:event.detail.key,
+				value:event.detail.value,
+				field:event.detail.field.toDescription()
+			})
+		});
+	});
+	configwrapper.addEventListener("formRemove",function(event)
+	{
+		SC.rq({
+			url:"rest/config",
+			method:"DELETE",
+			data:JSON.stringify({
+				path:event.detail.path,
+				key:event.detail.key,
+			})
+		});
+	});
 
 	SMOD("configDialog",function showConfigDialog()
 	{
