@@ -1,0 +1,27 @@
+.config {
+	[data-path="networks"] {
+		border-left:0 none;
+		border-right:0 none;
+		border-bottom:0 none;
+		padding:0 1ex;
+
+		> fieldset > .removeField {
+			.tooltip(@content:"remove",@direction:"left");
+			position:absolute;
+		}
+	}
+	[data-path$="connect commands"] {
+		> fieldset {
+			border: 0 none;
+			display: flex;
+			flex-direction: row;
+
+			> .removeField {
+				position:static;
+			}
+			> legend {
+				display:none;
+			}
+		}
+	}
+}

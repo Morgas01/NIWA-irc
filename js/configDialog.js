@@ -8,6 +8,7 @@
 
 	var configDialog=null;
 	var configwrapper=document.createElement("div");
+	configwrapper.classList.add("config")
 	var form=null;
 
 	configwrapper.addEventListener("formChange",function(event)

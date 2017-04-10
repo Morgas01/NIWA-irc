@@ -2,6 +2,20 @@
 var NICK_PATTERN=/[a-zA-Z_\-\[\]\\^{}|`][a-zA-Z0-9_\-\[\]\\^{}|`]*/;
 NICK_PATTERN.toJSON=RegExp.prototype.toString; // for serialization
 
+var commandDescription={
+	type:"array",
+	model:{
+		type:"object",
+		model:{
+			command:{
+				type:"select",
+				values:["message","whois"]
+			},
+			param:"string"
+		}
+	}
+};
+
 module.exports=µ.getModule("configManager")({
 	"nickname":{
 		type:"string",
@@ -24,12 +38,7 @@ module.exports=µ.getModule("configManager")({
 				type:"boolean",
 				default:false
 			},
-			"connect commands":[
-				{
-					type:"map",
-					model:"string"
-				}
-			],
+			"connect commands":commandDescription,
 			"DCC folder":"string",
 			"channels":{
 				type:"map",
@@ -39,12 +48,7 @@ module.exports=µ.getModule("configManager")({
 						type:"boolean",
 						default:false
 					},
-					"join commands":{
-						model:[{
-							type:"map",
-							model:"string"
-						}]
-					},
+					"join commands":commandDescription,
 					"DCC folder":"string"
 				}
 			}
