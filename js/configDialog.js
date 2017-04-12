@@ -13,13 +13,24 @@
 
 	configwrapper.addEventListener("formChange",function(event)
 	{
-		SC.rq({
+		var field=event.target;
+		field.disabled=true;
+		SC.rq.json({
 			url:"rest/config",
 			data:JSON.stringify({
 				path:event.detail.path.concat(event.detail.key),
 				value:event.detail.value
 			})
-		});
+		})
+		.then(function(reply)
+		{
+			if(!reply.result)
+			{
+				field.setCustomValidity(reply.error);
+			}
+		})
+		.always(()=>
+		event.target.disabled=false);
 	});
 	configwrapper.addEventListener("formAdd",function(event)
 	{
@@ -70,6 +81,22 @@
 		}).then(function(data)
 		{
 			form=SC.form(data.description,data.value);
+
+
+			/**** additions ****/
+
+			var globalNick=form.querySelector("[name=nickname][data-path='']");
+			for (var nick of form.querySelectorAll("[name=nickname][data-path*='.']"))
+			{
+				nick.placeholder=globalNick.value
+			}
+
+			var globalDccFolder=form.querySelector("[name='DCC folder'][data-path='']");
+			for (var dccFolder of form.querySelectorAll("[name='DCC folder'][data-path*='.']"))
+			{
+				dccFolder.placeholder=globalDccFolder.value
+			}
+
 			configwrapper.appendChild(form);
 		});
 	})
