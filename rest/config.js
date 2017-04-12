@@ -1,5 +1,5 @@
 
-var NICK_PATTERN=/[a-zA-Z_\-\[\]\\^{}|`][a-zA-Z0-9_\-\[\]\\^{}|`]*/;
+var NICK_PATTERN=/^[a-zA-Z_\-\[\]\\^{}|`][a-zA-Z0-9_\-\[\]\\^{}|`]*$/;
 NICK_PATTERN.toJSON=RegExp.prototype.toString; // for serialization
 
 var commandDescription={
@@ -33,7 +33,7 @@ module.exports=µ.getModule("configManager")({
 				type:"string",
 				pattern:NICK_PATTERN
 			},
-			"password":"string",
+			//"password":"string",
 			"auto connect":{
 				type:"boolean",
 				default:false
@@ -43,7 +43,7 @@ module.exports=µ.getModule("configManager")({
 			"channels":{
 				type:"map",
 				model:{
-					"password":"string",
+					//"password":"string",
 					"auto join":{
 						type:"boolean",
 						default:false
