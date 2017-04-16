@@ -8,12 +8,19 @@
 	});
 
 	var NetworkTab=µ.Class({
-		init:function(networkName)
+		init:function(networkData)
 		{
 			this.tabs=SC.tabs();
 			this.tabs.classList.add("network");
 			this.chatMap=new WeakMap();
-			this.addChat(SC.messageUtils.SERVER,new SC.Chat(),true);
+			this.addChat(SC.messageUtils.SERVER,new SC.Chat(networkData),true);
+			if (networkData)
+			{
+				for(var targetName in networkData.targets)
+				{
+					this.getChat(targetName,networkData.targets[targetName]);
+				}
+			}
 		},
 		addChat:function(name,chat,activate)
 		{
@@ -21,20 +28,19 @@
 			this.chatMap.set(chat.container,chat);
 			return chat;
 		},
-		getChat:function(name)
+		getChat:function(name,chatData)
 		{
-			var tab=this.tabs.getTabsByTitleContent(name)[0];
+			var tab=this.tabs.getTabsByTitleContent(name||SC.messageUtils.SERVER)[0];
 			if(!tab)
 			{
-				if(SC.messageUtils.targetIsChannel(name)) return this.addChat(name,new SC.ChannelChat());
-				else return this.addChat(name,new SC.Chat());
+				if(SC.messageUtils.targetIsChannel(name)) return this.addChat(name,new SC.ChannelChat(chatData));
+				else return this.addChat(name,new SC.Chat(chatData));
 			}
 			return this.chatMap.get(tab);
 		},
 		addMessage:function(message)
 		{
-			var target=SC.messageUtils.getTarget(message);
-			var chat=this.getChat(target);
+			var chat=this.getChat(message.target);
 			return chat.addMessage(message);
 		},
 		setTopic:function(channelName,topic)

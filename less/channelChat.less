@@ -9,11 +9,17 @@
 	.topic {
 		border-radius: @contentBorderRadius @contentBorderRadius 0 @contentBorderRadius;
 	}
-	.userList {
-		border-top-width:0;
-	}
 	.wrapper {
+		height:0;
 		flex-grow:1;
 		display:flex;
+	}
+	.scrollContainer {
+		height:auto;
+	}
+	.userList {
+		border-top-width:0;
+		overflow-y: auto;
+		overflow-x: hidden;
 	}
 }

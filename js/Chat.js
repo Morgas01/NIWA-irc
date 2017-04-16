@@ -12,9 +12,8 @@
 	}
 
 	var Chat=µ.Class({
-		init:function()
+		init:function(param)
 		{
-
 			this.container=document.createElement("div");
 			this.container.classList.add("Chat");
 			this.scrollContainer=document.createElement("div");
@@ -31,6 +30,11 @@
 			this.input.type="text";
 			this.container.appendChild(this.input);
 			this.container.addEventListener("keydown",e=>this.onKeyDown(e))
+
+			if (param)
+			{
+				for(var m of param.messages) this.addMessage(m);
+			}
 		},
 		addMessage:function(message)
 		{
@@ -42,8 +46,9 @@
 			var text=document.createElement("td");
 			text.classList.add("text");
 
+			row.dataset.type=message.type;
 			timestamp.textContent=formatTime(message.time);
-			username.textContent=message.sender;
+			username.textContent=message.user;
 			text.appendChild(this.parseMessageText(message.text));
 
 			row.appendChild(timestamp);

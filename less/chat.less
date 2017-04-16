@@ -5,20 +5,23 @@
 	border: 0 none;
 
 	.scrollContainer {
+		height:0;
 		flex-grow:1;
-		display:flex;
-		flex-direction:row;
-		align-items:flex-end;
-
-		.username
-		{
-			&::after {
-				content:" : ";
-			}
-			white-space:nowrap;
-		}
-		.text:last-child {
-			width:100%;
-		}
+		overflow:auto;
 	}
+	.username
+	{
+		&::after {
+			content:" : ";
+		}
+		white-space:nowrap;
+	}
+	.text {
+		width:100%;
+		white-space:pre-wrap;
+	}
+	tr:nth-child(odd) .text {
+		background-color:fade(@secondaryColor,20%);
+	}
+
 }

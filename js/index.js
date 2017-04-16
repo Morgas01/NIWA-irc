@@ -50,14 +50,14 @@
 				});
 			}
 		},container);
-	});
+	},true);
 
-	var getNetwork=function(name,activate)
+	var getNetwork=function(name,activate,networkData)
 	{
 		var tab=networkTabs.getTabsByTitleContent(name)[0];
 		if(!tab)
 		{
-			var network=new SC.NetworkTab();
+			var network=new SC.NetworkTab(networkData);
 			networkTabs.addTab(name,network.tabs,activate==true,-1);
 			networkMap.set(network.tabs,network);
 			return network;
@@ -67,7 +67,7 @@
 	}
 	var addMessage=function(message)
 	{
-		var network=getNetwork(message.network);
+		var network=getNetwork(message.server);
 		network.addMessage(message);
 	}
 
@@ -83,20 +83,13 @@
 	es.addEventListener("ping",µ.logger.debug);
 	es.addEventListener("init",function(event)
 	{
+		while(networkTabs.length>1) networkTabs.removeTab(0);
 		var data=JSON.parse(event.data);
-		for(var network in data.networks)
+		var networks=[];
+		for(var networkName in data)
 		{
-			var channels=data.networks[network].channels;
-			var network=getNetwork(network);
-			for(var channelName in channels)
-			{
-				var channel=channels[channelName];
-				if(channel.topic) network.setTopic(channelName,channel.topic);
-				if(channel.userList) network.setUserList(channelName,channel.userList);
-			}
+			getNetwork(networkName,false,data[networkName]);
 		}
-		for(var message of data.messages) addMessage(message);
-
 		networkTabs.setActive(0);
 	});
 	es.addEventListener("message",function(event)
@@ -121,10 +114,10 @@
 
 		var command=event.detail.command.toLowerCase();
 
+		var target=chats.getActive().textContent;
+		var value=event.detail.value;
 		var data={
-			network:activeNetwork.textContent,
-			target:chats.getActive().textContent,
-			value:event.detail.value,
+			network:activeNetwork.textContent
 		};
 		switch(command)
 		{
@@ -138,6 +131,7 @@
 				if(!match)
 				{
 					//TODO
+					return;
 				}
 				else
 				{
@@ -146,11 +140,14 @@
 				}
 			case "say":
 				command="message";
+				data.target=target;
+				data.text=value;
 				break;
 			case "join":
+				data.channel=value;
+				break;
 			case "whois":
-				data.target=data.value;
-				data.value=null;
+				data.user=value;
 				break;
 			default:
 				//TODO

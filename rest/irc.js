@@ -1,55 +1,13 @@
 
 var config=require("./config");
-
-var messageUtils=require("../js/messageUtils");
-
-var ircData={
-	messages:[],
-	networks:{}
-};
-var addMessage=function(network,sender,receiver,text,type)
-{
-	var msg={
-		network:network,
-		sender:sender,
-		receiver:receiver,
-		text:text,
-		type:type,
-		time:Date.now()
-	};
-	ircData.messages.push(msg);
-	worker.event("irc",ircData,"message",msg);
-};
-var getChannel=function(network,channel)
-{
-	if(!(network in ircData.networks)) ircData.networks[network]={channels:{}};
-	network=ircData.networks[network];
-	if(!(channel in network.channels)) network.channels[channel]={topic:null,userList:null};
-	return network.channels[channel];
-}
-var setTopic=function(network,channel,topic)
-{
-	c=getChannel(network,channel);
-	c.topic=topic;
-
-	worker.event("irc",ircData,"topic",{network:network,channel:channel,topic:topic});
-};
-var setUserList=function(network,channel,userList)
-{
-	c=getChannel(network,channel);
-	c.userList=userList;
-
-	worker.event("irc",ircData,"userList",{network:network,channel:channel,userList:userList});
-};
-
-worker.event("irc",ircData,"init",null);
+var ircManager=require("../lib/IrcManager");
 
 var getCredentials=function(network,nickname,password)
 {
 	return config.ready
-	.then(c=>c.get("networks"))
-	.then(function(networks)
+	.then(function(config)
 	{
+		var networks=config.get("networks")
 		var n=networks.get(network);
 		if(!n)
 		{
@@ -62,8 +20,9 @@ var getCredentials=function(network,nickname,password)
 			config.save();
 		}
 		nickname=n.get("nickname").get();
-		if(!nickname) nickname=Promise.reject("no credentials");
-		return {nickname:nickname,password:n.get("password").get()};
+		if(!nickname) nickname=config.get("nickname").get();
+		if(!nickname) return Promise.reject("no credentials");
+		return {nickname:nickname,password:null};//n.get("password").get()};
 	});
 };
 
@@ -74,28 +33,46 @@ module.exports={
 		{
 			return Promise.reject('POST Json like:{host:"myHost"[,nickname:"myNick"[,password:"myPassword"]}');
 		}
-		else {
+		else
+		{
 			return getCredentials(param.data.host,param.data.nickname,param.data.password)
 			.then(function(credentials)
 			{
-				addMessage(param.data.host,messageUtils.SERVER,messageUtils.maskUserName(credentials.nickname),`trying to connect to ${param.data.host} as ${credentials.nickname} with${credentials.password?'':'out'} password`);
-
-				//test
-				addMessage(param.data.host,"testUser","#testChannel","test Message");
-				setTopic(param.data.host,"#testChannel","test topic");
-				setUserList(param.data.host,"#testChannel",["test","list"]);
-				addMessage(param.data.host,"testUser",messageUtils.maskUserName(credentials.nickname),"private message");
-				addMessage(param.data.host,credentials.nickname,"testUser","private answer");
+				return ircManager.connect(param.data.host,credentials.nickname,credentials.password);
 			});
 		}
 	},
-	message:function()
+	message:function(param)
 	{
+		if(param.method!="POST"||!param.data.network||!param.data.target||!param.data.text)
+		{
+			return Promise.reject('POST Json like:{network:"myNetwork",target:"myTarget",text:"myText"}');
+		}
+		else
+		{
+			return ircManager.message(param.data.network,param.data.target,param.data.text);
+		}
 	},
-	join:function()
+	join:function(param)
 	{
+		if(param.method!="POST"||!param.data.network||!param.data.channel)
+		{
+			return Promise.reject('POST Json like:{network:"myNetwork",channel:"myChannel"}');
+		}
+		else
+		{
+			return ircManager.join(param.data.network,param.data.channel);
+		}
 	},
-	whois:function()
+	whois:function(param)
 	{
+		if(param.method!="POST"||!param.data.network||!param.data.user)
+		{
+			return Promise.reject('POST Json like:{network:"myNetwork",user:"myUser"}');
+		}
+		else
+		{
+			return ircManager.whois(param.data.network,param.data.user);
+		}
 	}
 }

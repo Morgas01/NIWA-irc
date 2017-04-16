@@ -8,9 +8,9 @@
 
 	var ChannelChat=µ.Class(Chat,
 	{
-		init:function()
+		init:function(param)
 		{
-			this.mega();
+			this.mega(param);
 			this.container.classList.add("Channel");
 			this.topic=document.createElement("div");
 			this.topic.classList.add("topic");
@@ -23,6 +23,12 @@
 			this.container.insertBefore(wrapper,this.input);
 			wrapper.appendChild(this.scrollContainer);
 			wrapper.appendChild(this.userList);
+
+			if (param)
+			{
+				if(param.topic) this.setTopic(param.topic);
+				if(param.userList) this.setUserList(param.userList);
+			}
 		},
 		setTopic:function(topic)
 		{
@@ -32,6 +38,7 @@
 		setUserList:function(userList)
 		{
 			while(this.userList.firstChild)this.userList.firstChild.remove();
+			userList=Object.keys(userList);
 			userList.sort();
 			for(var user of userList)
 			{
