@@ -76,3 +76,28 @@ module.exports={
 		}
 	}
 }
+
+config.ready.then(function(config)
+{
+	if(config.get("auto connect").get())
+	{
+		for (var entry of config.get("networks"))
+		{
+			var name=entry[0];
+			var network=entry[1];
+
+			if(network.get("auto connect").get())
+			{
+				getCredentials(name)
+				.then(function(credentials)
+				{
+					return ircManager.connect(name,credentials.nickname,credentials.password);
+				})
+				.catch(function(e)
+				{
+					µ.logger.error(e);
+				});
+			}
+		}
+	}
+});

@@ -11,7 +11,8 @@ var commandDescription={
 				type:"select",
 				values:["message","whois"]
 			},
-			param:"string"
+			target:"string",
+			parameter:"string"
 		}
 	}
 };
