@@ -1,6 +1,7 @@
 (function(µ,SMOD,GMOD,HMOD,SC){
 
 	//SC=SC({});
+
 	var utils={
 		SERVER:"<Server>",
 		targetIsChannel:function(target)

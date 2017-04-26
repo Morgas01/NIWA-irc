@@ -149,6 +149,8 @@
 			case "whois":
 				data.user=value;
 				break;
+			case "xdcc":
+
 			default:
 				//TODO
 				µ.logger.warn(`unknown command: ${command}`);

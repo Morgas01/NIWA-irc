@@ -1,6 +1,7 @@
 
 var config=require("./config");
 var ircManager=require("../lib/IrcManager");
+var xdccManager=require("../lib/xdccManager");
 
 var getCredentials=function(network,nickname,password)
 {
@@ -73,6 +74,34 @@ module.exports={
 		else
 		{
 			return ircManager.whois(param.data.network,param.data.user);
+		}
+	},
+	dcc:function(param)
+	{
+		if(param.method!="POST"||!param.data.network||!param.data.user||!param.data.ip||!param.data.port||!param.data.filepath||!param.data.filename)
+		{
+			return Promise.reject('POST Json like:{network:"myNetwork",user:"myUser",ip:"ip",port:"port",filepath:"filepath",filename:"filename"}');
+		}
+		else
+		{
+			var download=param.data; //TODO
+			var rtn=xdccManager.download(download);
+			if (Array.isArray(rtn))
+			{
+				return Promise.reject(rtn);
+			}
+			return download;
+		}
+	},
+	xdcc:function(param)
+	{
+		if(param.method!="POST"||!param.data.network||!param.data.user)
+		{
+			return Promise.reject('POST Json like:{network:"myNetwork",user:"myUser"}');
+		}
+		else
+		{
+			return xdccManager.request(param.data);
 		}
 	}
 }
