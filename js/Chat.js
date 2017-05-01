@@ -1,6 +1,8 @@
 (function(µ,SMOD,GMOD,HMOD,SC){
 
-	//SC=SC({});
+	SC=SC({
+		Download:"Download"
+	});
 
 	var formatTime=function(time)
 	{
@@ -49,17 +51,42 @@
 			row.dataset.type=message.type;
 			timestamp.textContent=formatTime(message.time);
 			username.textContent=message.user;
-			text.appendChild(this.parseMessageText(message.text));
+			text.appendChild(this.parseMessage(message));
 
 			row.appendChild(timestamp);
 			row.appendChild(username);
 			row.appendChild(text);
 			this.messageTableBody.appendChild(row);
 		},
-		parseMessageText:function(text)
+		parseMessage:function(message)
 		{
 			//TODO
+			if(message.dcc)
+			{
+				var rtn=document.createElement("span");
+				var desc=document.createElement("span");
+				rtn.appendChild(desc);
+				var accept=document.createElement("button");
+				accept.textContent="accept";
+				rtn.appendChild(accept);
+
+				if (message.dcc.command==="SEND")
+				{
+					desc.textContent=`Offers you the file "${message.dcc.filename}" (${SC.Download.formatFilesize(message.dcc.filesize)})`;
+					accept.dataset.action="dccSend";
+					accept.dataset.ip=message.dcc.ip;
+					accept.dataset.port=message.dcc.port;
+					accept.dataset.filename=message.dcc.filename;
+				}
+				else return this.parseMessageColors(message.text);
+				return rtn;
+			}
+			return this.parseMessageColors(message.text);
+		},
+		parseMessageColors:function(text)
+		{
 			var rtn=document.createElement("span");
+			// TODO irc colors
 			rtn.textContent=text;
 			return rtn;
 		},

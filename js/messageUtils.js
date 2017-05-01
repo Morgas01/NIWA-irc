@@ -4,7 +4,7 @@
 
 	var utils={
 		SERVER:"<Server>",
-		targetIsChannel:function(target)
+		isChannel:function(target)
 		{
 			return /^[#\$]/.test(target);
 		}

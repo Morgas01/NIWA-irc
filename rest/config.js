@@ -1,4 +1,6 @@
 
+var FS=require("fs");
+
 var NICK_PATTERN=/^[a-zA-Z_\-\[\]\\^{}|`][a-zA-Z0-9_\-\[\]\\^{}|`]*$/;
 NICK_PATTERN.toJSON=RegExp.prototype.toString; // for serialization
 
@@ -26,7 +28,29 @@ module.exports=µ.getModule("configManager")({
 		type:"boolean",
 		default:false
 	},
-	"DCC folder":"string",
+	"DCC":{
+		"download folder":{
+			type:"string",
+			validate:function(path)
+			{
+				if (FS.existsSync(path)) return true;
+				return "path does not exist";
+			}
+		},
+		"suffix":{
+			type:"string",
+			default:".part"
+		},
+		"resume":{
+			type:"boolean",
+			default:true
+		},
+		"resume timeout":{
+			type:"number",
+			default:10000,
+			min:500
+		}
+	},
 	"networks":{
 		type:"map",
 		model:{
@@ -40,7 +64,6 @@ module.exports=µ.getModule("configManager")({
 				default:false
 			},
 			"connect commands":commandDescription,
-			"DCC folder":"string",
 			"channels":{
 				type:"map",
 				model:{
@@ -49,8 +72,7 @@ module.exports=µ.getModule("configManager")({
 						type:"boolean",
 						default:false
 					},
-					"join commands":commandDescription,
-					"DCC folder":"string"
+					"join commands":commandDescription
 				}
 			}
 		}

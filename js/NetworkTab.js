@@ -33,7 +33,7 @@
 			var tab=this.tabs.getTabsByTitleContent(name||SC.messageUtils.SERVER)[0];
 			if(!tab)
 			{
-				if(SC.messageUtils.targetIsChannel(name)) return this.addChat(name,new SC.ChannelChat(chatData));
+				if(SC.messageUtils.isChannel(name)) return this.addChat(name,new SC.ChannelChat(chatData));
 				else return this.addChat(name,new SC.Chat(chatData));
 			}
 			return this.chatMap.get(tab);

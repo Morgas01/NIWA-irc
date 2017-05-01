@@ -2,6 +2,10 @@
 var config=require("./config");
 var ircManager=require("../lib/IrcManager");
 var xdccManager=require("../lib/xdccManager");
+var Download=require("../lib/NIWA-Downloads/Download");
+
+var FS=require("fs");
+
 
 var getCredentials=function(network,nickname,password)
 {
@@ -78,30 +82,57 @@ module.exports={
 	},
 	dcc:function(param)
 	{
-		if(param.method!="POST"||!param.data.network||!param.data.user||!param.data.ip||!param.data.port||!param.data.filepath||!param.data.filename)
+		if(param.method!="POST"||!param.data.network||!param.data.user||!param.data.ip||!param.data.port||!param.data.filename)
 		{
 			return Promise.reject('POST Json like:{network:"myNetwork",user:"myUser",ip:"ip",port:"port",filepath:"filepath",filename:"filename"}');
 		}
 		else
 		{
-			var download=param.data; //TODO
-			var rtn=xdccManager.download(download);
-			if (Array.isArray(rtn))
+			return config.ready
+			.then(function(config)
 			{
-				return Promise.reject(rtn);
-			}
-			return download;
+				var download=new Download({
+					state:Download.states.RUNNING,
+					dataSource:{
+						network:param.data.network,
+						user:param.data.user,
+						ip:param.data.ip,
+						port:param.data.port,
+					},
+					filename:param.data.filename,
+					filepath:param.data.filepath||config.get(["DCC","download folder"]).get()
+				});
+				var rtn=xdccManager.download(download);
+				if (Array.isArray(rtn))
+				{
+					return Promise.reject(rtn);
+				}
+			});
 		}
 	},
 	xdcc:function(param)
 	{
-		if(param.method!="POST"||!param.data.network||!param.data.user)
+		if(param.method!="POST"||!param.data.network||!param.data.user||!param.dataSource.packnumber)
 		{
-			return Promise.reject('POST Json like:{network:"myNetwork",user:"myUser"}');
+			return Promise.reject('POST Json like:{network:"myNetwork",user:"myUser",packnumber:1234}');
 		}
 		else
 		{
-			return xdccManager.request(param.data);
+			return config.ready
+			.then(function(config)
+			{
+				var download=new Download({
+					state:Download.states.RUNNING,
+					dataSource:{
+						network:param.data.network,
+						user:param.data.user,
+						packnumber:param.dataSource.packnumber
+					},
+					filename:param.data.filename,
+					filepath:param.data.filepath||config.get(["DCC","download folder"]).get()
+				});
+				return xdccManager.request(download);
+			});
 		}
 	}
 }

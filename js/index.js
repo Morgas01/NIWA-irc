@@ -105,7 +105,7 @@
 		help:()=>SC.help(),
 	};
 
-	actionize(actions,document.getElementById("actions"));
+	actionize(actions,document.getElementById("globalActions"));
 
 	networkTabs.addEventListener("chatCommand",function(event)
 	{
@@ -127,17 +127,19 @@
 				);
 				return;
 			case "msg":
-				var match=data.value.match(/^(\S+)\s+(.*)/);
+				var match=value.match(/^(\S+)\s+(.+)/);
 				if(!match)
 				{
-					//TODO
+					//TODO error message
 					return;
 				}
 				else
 				{
+					command="message";
 					data.target=match[1];
-					data.value=match[2];
+					data.text=match[2];
 				}
+				break;
 			case "say":
 				command="message";
 				data.target=target;
@@ -163,5 +165,33 @@
 		})
 		.catch(µ.logger.error);
 	});
+
+
+	var actions={
+		jump:function(){},
+		config:()=>SC.configDialog(),
+		help:()=>SC.help(),
+	};
+
+	actionize({
+		dccSend:function(event,button)
+		{
+			var activeNetwork=networkTabs.getActive();
+			var chats=networkTabs.getTab(activeNetwork);
+			var user=chats.getActive().textContent;
+
+			SC.rq({
+				url:"rest/irc/dcc",
+				data:JSON.stringify({
+					network:activeNetwork.textContent,
+					user:user,
+					ip:button.dataset.ip,
+					port:button.dataset.port,
+					filename:button.dataset.filename
+				})
+			})
+			.catch(µ.logger.error);
+		}
+	},networkTabs);
 
 })(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);
