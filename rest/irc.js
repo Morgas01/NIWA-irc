@@ -141,6 +141,7 @@ module.exports={
 
 config.ready.then(function(config)
 {
+	SC.ircManager;// load manager
 	if(config.get("auto connect").get())
 	{
 		for (var entry of config.get("networks"))
