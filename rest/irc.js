@@ -1,8 +1,10 @@
 
+var SC=µ.shortcut({
+	xdccManager:require.bind(null,"../lib/xdccManager"),
+    ircManager:require.bind(null,"../lib/IrcManager"),
+    Download:require.bind(null,"../lib/NIWA-Downloads/Download")
+});
 var config=require("./config");
-var ircManager=require("../lib/IrcManager");
-var xdccManager=require("../lib/xdccManager");
-var Download=require("../lib/NIWA-Downloads/Download");
 
 var FS=require("fs");
 
@@ -43,7 +45,7 @@ module.exports={
 			return getCredentials(param.data.host,param.data.nickname,param.data.password)
 			.then(function(credentials)
 			{
-				return ircManager.connect(param.data.host,credentials.nickname,credentials.password);
+				return SC.ircManager.connect(param.data.host,credentials.nickname,credentials.password);
 			});
 		}
 	},
@@ -55,7 +57,7 @@ module.exports={
 		}
 		else
 		{
-			return ircManager.message(param.data.network,param.data.target,param.data.text);
+			return SC.ircManager.message(param.data.network,param.data.target,param.data.text);
 		}
 	},
 	join:function(param)
@@ -66,7 +68,7 @@ module.exports={
 		}
 		else
 		{
-			return ircManager.join(param.data.network,param.data.channel);
+			return SC.ircManager.join(param.data.network,param.data.channel);
 		}
 	},
 	whois:function(param)
@@ -77,7 +79,7 @@ module.exports={
 		}
 		else
 		{
-			return ircManager.whois(param.data.network,param.data.user);
+			return SC.ircManager.whois(param.data.network,param.data.user);
 		}
 	},
 	dcc:function(param)
@@ -91,8 +93,8 @@ module.exports={
 			return config.ready
 			.then(function(config)
 			{
-				var download=new Download({
-					state:Download.states.RUNNING,
+				var download=new SC.Download({
+					state:SC.Download.states.RUNNING,
 					dataSource:{
 						network:param.data.network,
 						user:param.data.user,
@@ -102,7 +104,7 @@ module.exports={
 					filename:param.data.filename,
 					filepath:param.data.filepath||config.get(["DCC","download folder"]).get()
 				});
-				var rtn=xdccManager.download(download);
+				var rtn=SC.xdccManager.download(download);
 				if (Array.isArray(rtn))
 				{
 					return Promise.reject(rtn);
@@ -112,7 +114,7 @@ module.exports={
 	},
 	xdcc:function(param)
 	{
-		if(param.method!="POST"||!param.data.network||!param.data.user||!param.dataSource.packnumber)
+		if(param.method!="POST"||!param.data.network||!param.data.user||!param.data.packnumber)
 		{
 			return Promise.reject('POST Json like:{network:"myNetwork",user:"myUser",packnumber:1234}');
 		}
@@ -121,17 +123,17 @@ module.exports={
 			return config.ready
 			.then(function(config)
 			{
-				var download=new Download({
-					state:Download.states.RUNNING,
+				var download=new SC.Download({
+					state:SC.Download.states.RUNNING,
 					dataSource:{
 						network:param.data.network,
 						user:param.data.user,
-						packnumber:param.dataSource.packnumber
+						packnumber:param.data.packnumber
 					},
 					filename:param.data.filename,
 					filepath:param.data.filepath||config.get(["DCC","download folder"]).get()
 				});
-				return xdccManager.request(download);
+				return SC.xdccManager.request(download);
 			});
 		}
 	}
@@ -151,7 +153,7 @@ config.ready.then(function(config)
 				getCredentials(name)
 				.then(function(credentials)
 				{
-					return ircManager.connect(name,credentials.nickname,credentials.password);
+					return SC.ircManager.connect(name,credentials.nickname,credentials.password);
 				})
 				.catch(function(e)
 				{

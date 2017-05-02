@@ -119,6 +119,7 @@
 		var data={
 			network:activeNetwork.textContent
 		};
+		var match;
 		switch(command)
 		{
 			case "help":
@@ -127,7 +128,7 @@
 				);
 				return;
 			case "msg":
-				var match=value.match(/^(\S+)\s+(.+)/);
+				match=value.match(/^(\S+)\s+(.+)/);
 				if(!match)
 				{
 					//TODO error message
@@ -152,7 +153,20 @@
 				data.user=value;
 				break;
 			case "xdcc":
+				match=value.match(/^(?:([^#\d]\S*)\s+)?#?(\d+)/);
+				if(!match)
+				{
+					//TODO error message
+					return;
+				}
+				else
+				{
+					data.user=match[1]||target;
+					data.packnumber=match[2];
+					break;
+				}
 
+				break;
 			default:
 				//TODO
 				µ.logger.warn(`unknown command: ${command}`);
