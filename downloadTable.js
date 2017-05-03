@@ -15,6 +15,12 @@
 		eq:"equals"
 	});
 	var dateHelper=new Date();
+
+	var getTimeString=function(time)
+	{
+		dateHelper.setTime(time)
+		return ("0"+dateHelper.getUTCHours()).slice(-2)+":"+("0"+dateHelper.getUTCMinutes()).slice(-2)+":"+("0"+dateHelper.getUTCSeconds()).slice(-2);
+	}
 	var baseColumns={
 		"icon":function(cell,data)
 		{
@@ -75,17 +81,14 @@
 			if (cell.dataset.size&&cell.dataset.time)
 			{
 				var remaining=data.filesize-data.size;
-				dateHelper.setTime(remaining/data.getCurrentSpeed(cell.dataset.size,cell.dataset.time)*1000-3600000)
-				var title=dateHelper.toLocaleTimeString()+"\n";
-				dateHelper.setTime(remaining/data.getSpeed()*1000-3600000);
-				title+=dateHelper.toLocaleTimeString();
+				var title=getTimeString(remaining/data.getCurrentSpeed(cell.dataset.size,cell.dataset.time)*1000)+"\n";
+				title+=getTimeString(remaining/data.getSpeed()*1000);
 
 				cell.dataset.title=title;
 			}
 			if(data.time)
 			{
-				dateHelper.setTime(data.time-data.startTime-3600000);
-				cell.textContent=dateHelper.toLocaleTimeString();
+				cell.textContent=getTimeString(data.time-data.startTime);
 			}
 
 			cell.dataset.size=data.size;
