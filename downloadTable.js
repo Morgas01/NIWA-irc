@@ -14,7 +14,7 @@
 		TableData:"gui.TableData",
 		eq:"equals"
 	});
-
+	var dateHelper=new Date();
 	var baseColumns={
 		"icon":function(cell,data)
 		{
@@ -22,6 +22,20 @@
 			cell.classList.add(data instanceof SC.Download?"download":"package");
 		},
 		"name":"name",
+		"filepath":function filepath(cell,data)
+		{
+			var sep=(data.filepath.match(/[\\\/]/)||"/")[0];
+			cell.textContent=data.filepath+sep+data.filename;
+		},
+		"messages":function messages(cell,data)
+		{
+			if(data.messages.length>0) cell.textContent=data.messages[data.messages.length-1].text;
+			cell.dataset.title=data.messages.map(msg=>
+			{
+				dateHelper.setTime(msg.time);
+				return dateHelper.toLocaleTimeString()+" "+ msg.text;
+			}).join("\n");
+		},
 		"filesize":function filesize(cell,data)
 		{
 			var filesize;
@@ -31,24 +45,52 @@
 		},
 		"progress":function progress(cell,data)
 		{
-			var progress;
-			//TODO
-			if(data instanceof SC.Download) progress=25;
-			else progress=25;
-			cell.innerHTML=String.raw
+			if(cell.children.length==0)
+			{
+				cell.innerHTML=String.raw
 `<div class="progress-wrapper">
-	<div class="progress" style="width:${25}%;"></div>
+	<div class="progress"></div>
 </div>`
-			;
+				;
+			}
+			var percentage=data.size/data.filesize*100;
+			cell.firstElementChild.firstElementChild.style.width=percentage+"%";
+			cell.dataset.title=percentage.toFixed(2)+"%";
+
 		},
 		"speed":function speed(cell,data)
 		{
-			var speed;
-			//TODO
-			if(data instanceof SC.Download) speed="?";
-			else speed="?";
-			cell.textContent="? kb/s";
+			if (cell.dataset.size&&cell.dataset.time)
+			{
+				cell.dataset.title=SC.Download.formatFilesize(data.getCurrentSpeed(cell.dataset.size,cell.dataset.time))+"/s";
+			}
+			if(data.size)cell.textContent=SC.Download.formatFilesize(data.getSpeed())+"/s";
+
+			cell.dataset.size=data.size;
+			cell.dataset.time=data.time;
 		},
+		"time":function time(cell,data)
+		{
+
+			if (cell.dataset.size&&cell.dataset.time)
+			{
+				var remaining=data.filesize-data.size;
+				dateHelper.setTime(remaining/data.getCurrentSpeed(cell.dataset.size,cell.dataset.time)*1000-3600000)
+				var title=dateHelper.toLocaleTimeString()+"\n";
+				dateHelper.setTime(remaining/data.getSpeed()*1000-3600000);
+				title+=dateHelper.toLocaleTimeString();
+
+				cell.dataset.title=title;
+			}
+			if(data.time)
+			{
+				dateHelper.setTime(data.time-data.startTime-3600000);
+				cell.textContent=dateHelper.toLocaleTimeString();
+			}
+
+			cell.dataset.size=data.size;
+			cell.dataset.time=data.time;
+		}
 	}
 
 	var downloadTable=function (columns,options)
@@ -112,9 +154,9 @@
 				}
 				var cols=Array.slice(row.children,1);
 				//cols[0]=cols[0].children[2]
-				for(var i=0;i<cols.langth;i++)
+				for(var i=0;i<cols.length;i++)
 				{
-					tableData.columns.fn.call(item,cols[i],item);
+					tableData.columns[i].fn.call(item,cols[i],item);
 				}
 				row.dataset.state=item.state;
 			}
