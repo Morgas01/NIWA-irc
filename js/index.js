@@ -8,7 +8,8 @@
 		rq:"request",
 		NetworkTab:"NetworkTab",
 		help:"help",
-		configDialog:"configDialog"
+		configDialog:"configDialog",
+		downloadsDialog:"downloadsDialog"
 	});
 
 	var networkMap=new WeakMap();
@@ -100,6 +101,7 @@
 
 
 	var actions={
+		downloads:()=>SC.downloadsDialog(),
 		jump:function(){},
 		config:()=>SC.configDialog(),
 		help:()=>SC.help(),
