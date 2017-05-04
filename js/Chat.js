@@ -74,7 +74,7 @@
 
 				if (message.dcc.command==="SEND")
 				{
-					desc.textContent=`Offers you the file "${message.dcc.filename}" (${SC.Download.formatFilesize(message.dcc.filesize)})`;
+					desc.textContent=`Offers you the file "${message.dcc.filename}" (${SC.Download.formatFilesize(message.dcc.filesize)}) `;
 					accept.dataset.action="dccSend";
 					accept.dataset.ip=message.dcc.ip;
 					accept.dataset.port=message.dcc.port;
