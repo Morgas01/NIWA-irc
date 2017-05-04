@@ -18,7 +18,7 @@
 
 	var getTimeString=function(time)
 	{
-		dateHelper.setTime(time)
+		dateHelper.setTime(time||0)
 		return ("0"+dateHelper.getUTCHours()).slice(-2)+":"+("0"+dateHelper.getUTCMinutes()).slice(-2)+":"+("0"+dateHelper.getUTCSeconds()).slice(-2);
 	}
 	var baseColumns={
