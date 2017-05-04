@@ -16,13 +16,59 @@
 		}
 		white-space:nowrap;
 		text-align:right;
+		max-width: 10em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background-color:@primaryColor;
+        &::hover {
+        	overflow:show;
+        }
 	}
 	.text {
 		width:100%;
 		white-space:pre-wrap;
 	}
-	tr:nth-child(odd) .text {
-		background-color:fade(@secondaryColor,20%);
+	tr {
+		&:nth-child(odd) .text {
+			background-color:fade(@secondaryColor,20%);
+		}
+		&[data-type^=INFO] .text {
+			color:fadeout(@textColor,30%);
+		}
+	}
+
+	.ircColor(@code,@color) {
+		[data-color="@{code}"] {
+			color:@color;
+		}
+		[data-b-color="@{code}"] {
+			background-color:@color;
+		}
+	}
+	.ircColor("00",white);
+	.ircColor("01",black);
+	.ircColor("02",navy);
+	.ircColor("03",green);
+	.ircColor("04",red);
+	.ircColor("05",brown);
+	.ircColor("06",purple);
+	.ircColor("07",olive);
+	.ircColor("08",yellow);
+	.ircColor("09",lime);
+	.ircColor("10",teal);
+	.ircColor("11",cyan);
+	.ircColor("12",blue);
+	.ircColor("13",#FF00FF);
+	.ircColor("14",gray);
+	.ircColor("15",silver);
+	[data-bold=true] {
+		font-weight:bold;
+	}
+	[data-italics=true] {
+		font-style: italic;
+	}
+	[data-underline=true] {
+		text-decoration: underline;
 	}
 
 }

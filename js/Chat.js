@@ -11,7 +11,8 @@
 		return ("0"+date.getHours()).slice(-2)+":"+
 		("0"+date.getMinutes()).slice(-2)+":"+
 		("0"+date.getSeconds()).slice(-2);
-	}
+	};
+	var textFormatExp=/((?:[\x02\x03](?:\d{0,2}(?:,\d{1,2})?)?)*)([^\x02\x03]+)/g;
 
 	var Chat=µ.Class({
 		init:function(param)
@@ -50,7 +51,8 @@
 
 			row.dataset.type=message.type;
 			timestamp.textContent=formatTime(message.time);
-			username.textContent=message.user;
+			username.appendChild(this.parseMessageColors(message.user));
+			username.title=this.stripColors(message.user);
 			text.appendChild(this.parseMessage(message));
 
 			row.appendChild(timestamp);
@@ -85,10 +87,46 @@
 		},
 		parseMessageColors:function(text)
 		{
-			var rtn=document.createElement("span");
-			// TODO irc colors
-			rtn.textContent=text;
+			var rtn=document.createDocumentFragment();
+			if(!text) return rtn;
+
+			var color="";
+			var bColor="";
+			var bold=false;
+			var italics=false;
+			var underline=false;
+
+			text.replace(textFormatExp,function(match,codes,textPart)
+			{
+				var span=document.createElement("span");
+				rtn.appendChild(span);
+
+				var match=codes.match(/.*\x03(\d{1,2})(?:,(\d{1,2}))?/);
+				if(match)
+				{
+					color=("0"+match[1]).slice(-2);
+					if(match[2]) bColor=("0"+match[2]).slice(-2);
+				}
+				match=codes.match(/\x02/g);
+				if(match&&match.length%2!=0) bold=!bold;
+				match=codes.match(/\x1D/g);
+				if(match&&match.length%2!=0) italics=!italics;
+				match=codes.match(/\x1F/g);
+				if(match&&match.length%2!=0) underline=!underline;
+
+				span.dataset.color=color;
+				span.dataset.bColor=bColor;
+				span.dataset.bold=bold;
+				span.dataset.italics=italics;
+				span.dataset.underline=underline;
+
+				span.textContent=textPart;
+			});
 			return rtn;
+		},
+		stripColors:function(text)
+		{
+			return text&&text.replace(textFormatExp,"$2")||"";
 		},
 		onKeyDown:function(event)
 		{
