@@ -104,11 +104,7 @@ module.exports={
 					filename:param.data.filename,
 					filepath:param.data.filepath||config.get(["DCC","download folder"]).get()
 				});
-				var rtn=SC.xdccManager.download(download);
-				if (Array.isArray(rtn))
-				{
-					return Promise.reject(rtn);
-				}
+				SC.xdccManager.startDownload(download);
 			});
 		}
 	},
@@ -133,7 +129,7 @@ module.exports={
 					filename:param.data.filename,
 					filepath:param.data.filepath||config.get(["DCC","download folder"]).get()
 				});
-				return SC.xdccManager.request(download);
+				SC.xdccManager.startDownload(download);
 			});
 		}
 	}

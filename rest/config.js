@@ -49,6 +49,11 @@ module.exports=µ.getModule("configManager")({
 			type:"number",
 			default:10000,
 			min:500
+		},
+		"XDCC request timeout":{
+			type:"number",
+			default:10000,
+			min:1000
 		}
 	},
 	"networks":{
