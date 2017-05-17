@@ -36,6 +36,7 @@
 			// array to map
 			.reduce((d,c)=>(d[c.prototype.objectType]=c,d),{});
 
+			this.runningDownloadMap=new Map();
 			this.serviceMethods={};
 			for (var key in SERVICEMETHODS)
 			{
@@ -280,7 +281,22 @@
     	},
     	updateDownload:function(download)
     	{
-    		this.notify("update",{[download.objectType]:[download.toUpdateJSON()]});
+    		var data=download.toUpdateJSON();
+    		this.notify("update",{[download.objectType]:[data]});
+    		if (download.appName)
+    		{
+    			worker.ask(download.appName,"update",data);
+    		}
+    	},
+    	startDownload:function(download)
+    	{
+    		var promise=new SC.Promise(this.download,{args:[download]});
+    		this.runningDownloadMap.set(download,promise);
+    		promise.always(()=>this.runningDownloadMap.delete(download));
+    		promise.catch(function(error)
+    		{
+    			µ.logger.error({error:error},"download failed");
+    		});
     	}
 	});
 
