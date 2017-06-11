@@ -12,7 +12,8 @@
 		dlg:"gui.dialog",
 		stree:"gui.selectionTree",
 		TableData:"gui.TableData",
-		eq:"equals"
+		eq:"equals",
+		flatten:"flatten"
 	});
 	var dateHelper=new Date();
 
@@ -124,7 +125,7 @@
 		var refreshTable=function()
 		{
 			return Promise.all(Object.keys(options.DBClasses).map(key=>ocon.load(options.DBClasses[key])))
-			.then(Array.prototype.concat.apply.bind(Array.prototype.concat,Array.prototype)) //flatten
+			.then(SC.flatten)
 			.then(data=>
 			{
 				SC.DBObj.connectObjects(data);
@@ -300,7 +301,7 @@
 				if(selected.length==0) return Promise.resolve();
 				var packageClasses=Object.keys(options.DBClasses).map(key=>options.DBClasses[key]).filter(c=>c===SC.Download.Package||c.prototype instanceof SC.Download.Package);
 				return Promise.all(packageClasses.map(c=>ocon.load(c)))
-				.then(Array.prototype.concat.apply.bind(Array.prototype.concat,Array.prototype)) //flatten
+				.then(SC.flatten)
 				.then(function(packages)
 				{
 					SC.DBObj.connectObjects(packages);
@@ -369,7 +370,7 @@
 
 				var dbClasses=Object.keys(options.DBClasses).map(key=>options.DBClasses[key]);
 				return Promise.all(dbClasses.map(c=>ocon.load(c,loadPattern)))
-				.then(Array.prototype.concat.apply.bind(Array.prototype.concat,Array.prototype)) //flatten
+				.then(SC.flatten)
 				.then(function(downloads)
 				{
 					downloads.sort(SC.Download.sortByOrderIndex);
