@@ -137,7 +137,7 @@ module.exports={
 
 config.ready.then(function(config)
 {
-	SC.ircManager;// load manager
+	SC.xdccManager;// load manager
 	if(config.get("auto connect").get())
 	{
 		for (var entry of config.get("networks"))
@@ -159,4 +159,4 @@ config.ready.then(function(config)
 			}
 		}
 	}
-});
+}).catch(µ.logger.error);
