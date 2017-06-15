@@ -9,29 +9,7 @@ var config=require("./config");
 var FS=require("fs");
 
 
-var getCredentials=function(network,nickname,password)
-{
-	return config.ready
-	.then(function(config)
-	{
-		var networks=config.get("networks")
-		var n=networks.get(network);
-		if(!n)
-		{
-			n=networks.add(network);
-		}
-		if(nickname)
-		{
-			n.set("nickname",nickname);
-			n.set("password",password||null);
-			config.save();
-		}
-		nickname=n.get("nickname").get();
-		if(!nickname) nickname=config.get("nickname").get();
-		if(!nickname) return Promise.reject("no credentials");
-		return {nickname:nickname,password:null};//n.get("password").get()};
-	});
-};
+
 
 module.exports={
 	connect:function(param)
@@ -42,11 +20,7 @@ module.exports={
 		}
 		else
 		{
-			return getCredentials(param.data.host,param.data.nickname,param.data.password)
-			.then(function(credentials)
-			{
-				return SC.ircManager.connect(param.data.host,credentials.nickname,credentials.password);
-			});
+			return SC.ircManager.connect(param.data.host,param.data.nickname,param.data.password,param.reconnect);
 		}
 	},
 	message:function(param)
@@ -147,15 +121,7 @@ config.ready.then(function(config)
 
 			if(network.get("auto connect").get())
 			{
-				getCredentials(name)
-				.then(function(credentials)
-				{
-					return SC.ircManager.connect(name,credentials.nickname,credentials.password);
-				})
-				.catch(function(e)
-				{
-					µ.logger.error(e);
-				});
+				return SC.ircManager.connect(name);
 			}
 		}
 	}
