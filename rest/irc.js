@@ -103,7 +103,8 @@ module.exports={
 					filename:param.data.filename,
 					filepath:param.data.filepath||config.get(["DCC","download folder"]).get()
 				});
-				SC.xdccManager.startDownload(download);
+				SC.xdccManager.add(download)
+				.then(()=>SC.xdccManager.startDownload(download));
 			});
 		}
 	}
