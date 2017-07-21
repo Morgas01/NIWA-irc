@@ -12,7 +12,8 @@
 		("0"+date.getMinutes()).slice(-2)+":"+
 		("0"+date.getSeconds()).slice(-2);
 	};
-	var textFormatExp=/((?:[\x02\x03](?:\d{0,2}(?:,\d{1,2})?)?)*)([^\x02\x03]+)/g;
+	var ircColorRegExp=/((?:[\x02\x1D\x1F\x16\x0F]|\x03(?:\d{0,2}(?:,\d{1,2})?)?)*)([^\x02\x03\x1D\x1F\x16\x0F]+)/g;
+	var linkRegExp=/https?:\/\/\S+/g;
 
 	var Chat=µ.Class({
 		init:function(param)
@@ -51,7 +52,7 @@
 
 			row.dataset.type=message.type;
 			timestamp.textContent=formatTime(message.time);
-			username.appendChild(this.parseMessageColors(message.user));
+			if(message.user) username.appendChild(this.parseMessageColors(message.user));
 			username.title=this.stripColors(message.user);
 			text.appendChild(this.parseMessage(message));
 
@@ -83,56 +84,90 @@
 				else return this.parseMessageColors(message.text);
 				return rtn;
 			}
-			return this.parseMessageColors(message.text);
+			var text=this.parseMessageColors(message.text);
+			text=this.parseLinks(text);
+			return text;
 		},
-		parseMessageColors:function(text)
+		parseMessageColors:function(textOrFragmentOfElements)
 		{
-			var rtn=document.createDocumentFragment();
-			if(!text) return rtn;
-
 			var color="";
 			var bColor="";
 			var bold=false;
 			var italics=false;
 			var underline=false;
-
-			text.replace(textFormatExp,function(match,codes,textPart)
+			var reverse=false;
+			return Chat.parseText(textOrFragmentOfElements,ircColorRegExp,function(match,codes,textPart)
 			{
 				var span=document.createElement("span");
-				rtn.appendChild(span);
-
-				var match=codes.match(/.*\x03(\d{1,2})(?:,(\d{1,2}))?/);
-				if(match)
+				for(var i=0;i<codes.length;i++)
 				{
-					color=("0"+match[1]).slice(-2);
-					if(match[2]) bColor=("0"+match[2]).slice(-2);
+					switch(codes[i])
+					{
+						case "\x03":
+							var match=codes.match(/.*\x03(\d{1,2})?(?:,(\d{1,2}))?/);
+							if(match[1]) color=("0"+match[1]).slice(-2);
+							else color=""
+							if(match[2]) bColor=("0"+match[2]).slice(-2);
+							else if (!match[1])
+							{
+								bColor="";
+							}
+							i+=match[0].length-1;
+							break;
+						case "\x02":
+							bold=!bold;
+							break
+						case "\x1D":
+							italics=!italics;
+							break;
+						case "\x1F":
+							underline=!underline;
+							break;
+						case "\x16":
+							reverse=!reverse;
+							break;
+						case "\x0F":
+							color="";
+							bColor="";
+							bold=false;
+							italics=false;
+							underline=false;
+							reverse=false;
+							break;
+					}
 				}
-				match=codes.match(/\x02/g);
-				if(match&&match.length%2!=0) bold=!bold;
-				match=codes.match(/\x1D/g);
-				if(match&&match.length%2!=0) italics=!italics;
-				match=codes.match(/\x1F/g);
-				if(match&&match.length%2!=0) underline=!underline;
-
 				span.dataset.color=color;
 				span.dataset.bColor=bColor;
 				span.dataset.bold=bold;
 				span.dataset.italics=italics;
 				span.dataset.underline=underline;
+				span.dataset.reverse=reverse;
 
 				span.textContent=textPart;
-			});
-			return rtn;
+				return span;
+			})
 		},
 		stripColors:function(text)
 		{
-			return text&&text.replace(textFormatExp,"$2")||"";
+			return text&&text.replace(ircColorRegExp,"$2")||"";
+		},
+		parseLinks:function(textOrFragmentOfElements)
+		{
+			return Chat.parseText(textOrFragmentOfElements,linkRegExp,function(url)
+			{
+				var a=document.createElement("a");
+				a.classList.add("messageLink")
+				a.target="_blank";
+				a.href=url;
+				a.textContent=url;
+				return a;
+			});
 		},
 		onKeyDown:function(event)
 		{
 			if(event.key=='Enter')
 			{
-				//TODO
+				//TODO history
 				var match=this.input.value.match(/^\/(\S+)\s*(.*)$/);
 				var detail={
 					command:"say",
@@ -154,6 +189,57 @@
 			}
 		}
 	});
+	var replaceText=function(text,regExp,replacer)
+	{
+		var rtn=[];
+		var offset=0;
+		text.replace(regExp,function(match)
+		{
+			var nextOffset=arguments[arguments.length-2];
+			if(nextOffset>offset)
+			{
+				rtn.push(document.createTextNode(text.slice(offset,nextOffset)));
+			}
+			rtn.push(replacer.apply(null,arguments));
+			offset=nextOffset+match.length;
+		});
+		if(offset!=0&&offset<text.length)
+		{
+			rtn.push(document.createTextNode(text.slice(offset)));
+		}
+		return rtn;
+	};
+	Chat.parseText=function(textOrFragmentOfElements,regExp,replacer)
+	{
+
+		if(typeof textOrFragmentOfElements == "string")
+		{
+			var fragment=document.createDocumentFragment();
+			var parsedChildren=replaceText(textOrFragmentOfElements,regExp,replacer);
+			if(parsedChildren.length>0)
+			{
+				for(var parsedChild of parsedChildren) fragment.appendChild(parsedChild);
+			}
+			else
+			{
+				fragment.appendChild(document.createTextNode(textOrFragmentOfElements));
+			}
+			return fragment;
+		}
+		else for(var e of textOrFragmentOfElements.children)
+		{
+			if(regExp.test(e.textContent))
+			{
+				var parsedChildren=replaceText(e.textContent,regExp,replacer)
+				if(parsedChildren.length>0)
+				{
+					while(e.firstChild) e.firstChild.remove();
+					for(var parsedChild of parsedChildren) e.appendChild(parsedChild);
+				}
+			}
+		}
+		return textOrFragmentOfElements;
+	};
 	SMOD("Chat",Chat);
 
 })(Morgas,Morgas.setModule,Morgas.getModule,Morgas.hasModule,Morgas.shortcut);

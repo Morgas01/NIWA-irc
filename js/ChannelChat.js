@@ -33,7 +33,11 @@
 		setTopic:function(topic)
 		{
 			while(this.topic.firstElementChild)this.topic.firstElementChild.remove();
-			this.topic.appendChild(this.parseMessageColors(topic));
+			this.topic.appendChild(
+				this.parseLinks(
+					this.parseMessageColors(topic)
+				)
+			);
 		},
 		setUserList:function(userList)
 		{
