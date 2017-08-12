@@ -1,1 +1,4 @@
-module.exports=µ.getModule("dependencyManager")(["js","lib/NIWA-Downloads/Download.js","lib/NIWA-Downloads/downloadTable.js"],"js");
+
+var service=module.exports=module.exports=µ.getModule("dependencyManager")(["js"],"js");
+var niwaDownload=require("NIWA-Download");
+service.dependencyParser.addModuleDependencies(niwaDownload.moduleDependencies,niwaDownload.dir);

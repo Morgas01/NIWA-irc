@@ -2,7 +2,7 @@
 var SC=µ.shortcut({
 	xdccManager:require.bind(null,"../lib/xdccManager"),
     ircManager:require.bind(null,"../lib/IrcManager"),
-    Download:require.bind(null,"../lib/NIWA-Downloads/Download")
+    Download:"NIWA-Download.Download"
 });
 var config=require("./config");
 

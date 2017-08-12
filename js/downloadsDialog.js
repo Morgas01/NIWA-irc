@@ -2,7 +2,7 @@
 
 	SC=SC({
 		dlg:"gui.dialog",
-		downloadTable:"downloadTable"
+		DownloadTable:"NIWA-Download.DownloadTable"
 	});
 
 	var dialog=null;
@@ -18,7 +18,7 @@
 				closeBtn.dataset.action="close";
 				container.appendChild(closeBtn);
 
-				var table=SC.downloadTable([
+				var table=new SC.DownloadTable([
 					"filepath",
 					"messages",
 					"filesize",
@@ -30,7 +30,7 @@
 						cell.textContent=data.dataSource.user+"@"+data.dataSource.network;
 					}
 				]);
-				container.appendChild(table.getContainer());
+				container.appendChild(table.element);
 
 			},{modal:true});
 			dialog.classList.add("downloadsDialog");

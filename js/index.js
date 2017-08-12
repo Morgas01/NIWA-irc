@@ -1,5 +1,8 @@
 (function(µ,SMOD,GMOD,HMOD,SC){
 
+	//fun
+	µ.logger.info(GMOD("signature"));
+
 	var tabs=GMOD("gui.tabs");
 	var actionize=GMOD("gui.actionize");
 	var getInputValues=GMOD("getInputValues");
