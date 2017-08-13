@@ -1,7 +1,7 @@
 (function(µ,SMOD,GMOD,HMOD,SC){
 
 	SC=SC({
-		Download:"Download"
+		Download:"NIWA-Download.Download"
 	});
 
 	var formatTime=function(time)
