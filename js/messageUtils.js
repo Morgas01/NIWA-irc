@@ -2,7 +2,7 @@
 
 	//SC=SC({});
 
-	var utils={
+	let utils={
 		SERVER:"<Server>",
 		isChannel:function(target)
 		{

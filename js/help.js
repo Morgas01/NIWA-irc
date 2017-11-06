@@ -1,16 +1,16 @@
 (function(µ,SMOD,GMOD,HMOD,SC){
 
 	SC=SC({
-		dlg:"gui.dialog"
+		dlg:"gui.Dialog"
 	});
 
-	var helpDialog=null;
+	let helpDialog=null;
 
 	SMOD("help",function showHelp()
 	{
 		if(helpDialog==null)
 		{
-			helpDialog=SC.dlg(String.raw
+			helpDialog=new SC.dlg(String.raw
 `
 <table>
 	<thead>

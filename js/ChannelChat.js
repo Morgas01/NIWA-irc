@@ -1,14 +1,14 @@
 (function(µ,SMOD,GMOD,HMOD,SC){
 
-	var Chat=GMOD("Chat");
+	let Chat=GMOD("Chat");
 
 	//SC=SC({});
 
-	var insertHelper=document.createDocumentFragment();
+	let insertHelper=document.createDocumentFragment();
 
-	var ChannelChat=µ.Class(Chat,
+	let ChannelChat=µ.Class(Chat,
 	{
-		init:function(param)
+		constructor:function(param)
 		{
 			this.mega(param);
 			this.container.classList.add("Channel");
@@ -18,7 +18,7 @@
 			this.userList.classList.add("userList");
 
 			this.container.insertBefore(this.topic,this.container.firstElementChild);
-			var wrapper=document.createElement("div");
+			let wrapper=document.createElement("div");
 			wrapper.classList.add("wrapper");
 			this.container.insertBefore(wrapper,this.input);
 			wrapper.appendChild(this.scrollContainer);
@@ -44,9 +44,9 @@
 			while(this.userList.firstChild)this.userList.firstChild.remove();
 			userList=Object.keys(userList);
 			userList.sort();
-			for(var user of userList)
+			for(let user of userList)
 			{
-				var div=document.createElement("div");
+				let div=document.createElement("div");
 				div.textContent=user;
 				insertHelper.appendChild(div);
 			}

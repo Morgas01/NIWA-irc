@@ -3,9 +3,9 @@
 	//fun
 	µ.logger.info(GMOD("signature"));
 
-	var tabs=GMOD("gui.tabs");
-	var actionize=GMOD("gui.actionize");
-	var getInputValues=GMOD("getInputValues");
+	let tabs=GMOD("gui.tabs");
+	let actionize=GMOD("gui.actionize");
+	let getInputValues=GMOD("getInputValues");
 
 	SC=SC({
 		rq:"request",
@@ -15,8 +15,8 @@
 		downloadsDialog:"downloadsDialog"
 	});
 
-	var networkMap=new WeakMap();
-	var networkTabs=tabs();
+	let networkMap=new WeakMap();
+	let networkTabs=tabs();
 	networkTabs.classList.add("networks");
 	document.body.appendChild(networkTabs);
 
@@ -35,7 +35,7 @@
 		actionize({
 			connect:function()
 			{
-				var data=getInputValues(container.querySelectorAll("input"));
+				let data=getInputValues(container.querySelectorAll("input"));
 				SC.rq({
 					url:"rest/irc/connect",
 					data:JSON.stringify(data)
@@ -56,12 +56,12 @@
 		},container);
 	},true);
 
-	var getNetwork=function(name,activate,networkData)
+	let getNetwork=function(name,activate,networkData)
 	{
-		var tab=networkTabs.getTabsByTitleContent(name)[0];
+		let tab=networkTabs.getTabsByTitleContent(name)[0];
 		if(!tab)
 		{
-			var network=new SC.NetworkTab(networkData);
+			let network=new SC.NetworkTab(networkData);
 			networkTabs.addTab(name,network.tabs,activate==true,-1);
 			networkMap.set(network.tabs,network);
 			return network;
@@ -69,15 +69,14 @@
 		else if(activate) networkTabs.setActive(tab);
 		return networkMap.get(tab);
 	}
-	var addMessage=function(message)
+	let addMessage=function(message)
 	{
-		var network=getNetwork(message.server);
+		let network=getNetwork(message.server);
 		network.addMessage(message);
 	}
 
 
-
-	var es=new EventSource("event/irc");
+	let es=new EventSource("event/irc");
 	window.addEventListener("beforeunload",function(){es.close()})
 	es.addEventListener("error",function(error)
 	{
@@ -88,9 +87,9 @@
 	es.addEventListener("init",function(event)
 	{
 		while(networkTabs.length>1) networkTabs.removeTab(0);
-		var data=JSON.parse(event.data);
-		var networks=[];
-		for(var networkName in data)
+		let data=JSON.parse(event.data);
+		let networks=[];
+		for(let networkName in data)
 		{
 			getNetwork(networkName,false,data[networkName]);
 		}
@@ -102,29 +101,28 @@
 	});
 
 
-
-	var actions={
+	let globalActions={
 		downloads:()=>SC.downloadsDialog(),
 		jump:function(){},
 		config:()=>SC.configDialog(),
 		help:()=>SC.help(),
 	};
 
-	actionize(actions,document.getElementById("globalActions"));
+	actionize(globalActions,document.getElementById("globalActions"));
 
 	networkTabs.addEventListener("chatCommand",function(event)
 	{
-		var activeNetwork=networkTabs.getActive();
-		var chats=networkTabs.getTab(activeNetwork);
+		let activeNetwork=networkTabs.getActive();
+		let chats=networkTabs.getTab(activeNetwork);
 
-		var command=event.detail.command.toLowerCase();
+		let command=event.detail.command.toLowerCase();
 
-		var target=chats.getActive().textContent;
-		var value=event.detail.value;
-		var data={
+		let target=chats.getActive().textContent;
+		let value=event.detail.value;
+		let data={
 			network:activeNetwork.textContent
 		};
-		var match;
+		let match;
 		switch(command)
 		{
 			case "help":
@@ -170,7 +168,6 @@
 					data.packnumber=match[2];
 					break;
 				}
-
 				break;
 			default:
 				//TODO
@@ -185,19 +182,12 @@
 		.catch(µ.logger.error);
 	});
 
-
-	var actions={
-		jump:function(){},
-		config:()=>SC.configDialog(),
-		help:()=>SC.help(),
-	};
-
 	actionize({
 		dccSend:function(event,button)
 		{
-			var activeNetwork=networkTabs.getActive();
-			var chats=networkTabs.getTab(activeNetwork);
-			var user=chats.getActive().textContent;
+			let activeNetwork=networkTabs.getActive();
+			let chats=networkTabs.getTab(activeNetwork);
+			let user=chats.getActive().textContent;
 
 			SC.rq({
 				url:"rest/irc/dcc",

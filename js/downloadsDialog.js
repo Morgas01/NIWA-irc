@@ -1,24 +1,24 @@
 (function(µ,SMOD,GMOD,HMOD,SC){
 
 	SC=SC({
-		dlg:"gui.dialog",
+		dlg:"gui.Dialog",
 		DownloadTable:"NIWA-Download.DownloadTable"
 	});
 
-	var dialog=null;
+	let dialog=null;
 
-	var downloadsDialog=function()
+	let downloadsDialog=function()
 	{
 		if(dialog==null)
 		{
-			dialog=SC.dlg(function(container)
+			dialog=new SC.dlg(function(container)
 			{
-				var closeBtn=document.createElement("button");
+				let closeBtn=document.createElement("button");
 				closeBtn.textContent="\u274C";
 				closeBtn.dataset.action="close";
 				container.appendChild(closeBtn);
 
-				var table=new SC.DownloadTable([
+				let table=new SC.DownloadTable([
 					"filepath",
 					"messages",
 					"filesize",

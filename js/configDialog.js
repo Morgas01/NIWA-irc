@@ -1,19 +1,19 @@
 (function(µ,SMOD,GMOD,HMOD,SC){
 
 	SC=SC({
-		dlg:"gui.dialog",
+		dlg:"gui.Dialog",
 		form:"gui.form",
 		rq:"request"
 	});
 
-	var configDialog=null;
-	var configwrapper=document.createElement("div");
+	let configDialog=null;
+	let configwrapper=document.createElement("div");
 	configwrapper.classList.add("config")
-	var form=null;
+	let form=null;
 
 	configwrapper.addEventListener("formChange",function(event)
 	{
-		var field=event.target;
+		let field=event.target;
 		field.disabled=true;
 		SC.rq.json({
 			url:"rest/config",
@@ -61,10 +61,10 @@
 	{
 		if(configDialog==null)
 		{
-			configDialog=SC.dlg(function(element)
+			configDialog=new SC.dlg(function(element)
 			{
 				element.appendChild(configwrapper);
-				var closeBtn=document.createElement("button");
+				let closeBtn=document.createElement("button");
 				closeBtn.dataset.action=closeBtn.textContent="close";
 				closeBtn.autofocus=true;
 				element.appendChild(closeBtn);
@@ -85,14 +85,14 @@
 
 			/**** additions ****/
 
-			var globalNick=form.querySelector("[name=nickname][data-path='']");
-			for (var nick of form.querySelectorAll("[name=nickname][data-path*='.']"))
+			let globalNick=form.querySelector("[name=nickname][data-path='']");
+			for (let nick of form.querySelectorAll("[name=nickname][data-path*='.']"))
 			{
 				nick.placeholder=globalNick.value
 			}
 
-			var globalDccFolder=form.querySelector("[name='DCC folder'][data-path='']");
-			for (var dccFolder of form.querySelectorAll("[name='DCC folder'][data-path*='.']"))
+			let globalDccFolder=form.querySelector("[name='DCC folder'][data-path='']");
+			for (let dccFolder of form.querySelectorAll("[name='DCC folder'][data-path*='.']"))
 			{
 				dccFolder.placeholder=globalDccFolder.value
 			}

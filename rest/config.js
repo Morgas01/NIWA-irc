@@ -1,10 +1,10 @@
 
-var FS=require("fs");
+let FS=require("fs");
 
-var NICK_PATTERN=/^[a-zA-Z_\-\[\]\\^{}|`][a-zA-Z0-9_\-\[\]\\^{}|`]*$/;
+let NICK_PATTERN=/^[a-zA-Z_\-\[\]\\^{}|`][a-zA-Z0-9_\-\[\]\\^{}|`]*$/;
 NICK_PATTERN.toJSON=RegExp.prototype.toString; // for serialization
 
-var commandDescription={
+let commandDescription={
 	type:"array",
 	model:{
 		type:"object",

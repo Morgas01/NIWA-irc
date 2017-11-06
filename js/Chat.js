@@ -4,19 +4,19 @@
 		Download:"NIWA-Download.Download"
 	});
 
-	var formatTime=function(time)
+	let formatTime=function(time)
 	{
-		var date=new Date()
+		let date=new Date()
 		date.setTime(time);
 		return ("0"+date.getHours()).slice(-2)+":"+
 		("0"+date.getMinutes()).slice(-2)+":"+
 		("0"+date.getSeconds()).slice(-2);
 	};
-	var ircColorRegExp=/((?:[\x02\x1D\x1F\x16\x0F]|\x03(?:\d{0,2}(?:,\d{1,2})?)?)*)([^\x02\x03\x1D\x1F\x16\x0F]+)/g;
-	var linkRegExp=/https?:\/\/\S+/g;
+	let ircColorRegExp=/((?:[\x02\x1D\x1F\x16\x0F]|\x03(?:\d{0,2}(?:,\d{1,2})?)?)*)([^\x02\x03\x1D\x1F\x16\x0F]+)/g;
+	let linkRegExp=/https?:\/\/\S+/g;
 
-	var Chat=µ.Class({
-		init:function(param)
+	let Chat=µ.Class({
+		constructor:function(param)
 		{
 			this.container=document.createElement("div");
 			this.container.classList.add("Chat");
@@ -37,17 +37,17 @@
 
 			if (param)
 			{
-				for(var m of param.messages) this.addMessage(m);
+				for(let m of param.messages) this.addMessage(m);
 			}
 		},
 		addMessage:function(message)
 		{
-			var row=document.createElement("tr");
-			var timestamp=document.createElement("td");
+			let row=document.createElement("tr");
+			let timestamp=document.createElement("td");
 			timestamp.classList.add("timestamp");
-			var username=document.createElement("td");
+			let username=document.createElement("td");
 			username.classList.add("username");
-			var text=document.createElement("td");
+			let text=document.createElement("td");
 			text.classList.add("text");
 
 			row.dataset.type=message.type;
@@ -66,10 +66,10 @@
 			//TODO
 			if(message.dcc)
 			{
-				var rtn=document.createElement("span");
-				var desc=document.createElement("span");
+				let rtn=document.createElement("span");
+				let desc=document.createElement("span");
 				rtn.appendChild(desc);
-				var accept=document.createElement("button");
+				let accept=document.createElement("button");
 				accept.textContent="accept";
 				rtn.appendChild(accept);
 
@@ -84,27 +84,27 @@
 				else return this.parseMessageColors(message.text);
 				return rtn;
 			}
-			var text=this.parseMessageColors(message.text);
+			let text=this.parseMessageColors(message.text);
 			text=this.parseLinks(text);
 			return text;
 		},
 		parseMessageColors:function(textOrFragmentOfElements)
 		{
-			var color="";
-			var bColor="";
-			var bold=false;
-			var italics=false;
-			var underline=false;
-			var reverse=false;
+			let color="";
+			let bColor="";
+			let bold=false;
+			let italics=false;
+			let underline=false;
+			let reverse=false;
 			return Chat.parseText(textOrFragmentOfElements,ircColorRegExp,function(match,codes,textPart)
 			{
-				var span=document.createElement("span");
-				for(var i=0;i<codes.length;i++)
+				let span=document.createElement("span");
+				for(let i=0;i<codes.length;i++)
 				{
 					switch(codes[i])
 					{
 						case "\x03":
-							var match=codes.match(/.*\x03(\d{1,2})?(?:,(\d{1,2}))?/);
+							let match=codes.match(/.*\x03(\d{1,2})?(?:,(\d{1,2}))?/);
 							if(match[1]) color=("0"+match[1]).slice(-2);
 							else color=""
 							if(match[2]) bColor=("0"+match[2]).slice(-2);
@@ -155,7 +155,7 @@
 		{
 			return Chat.parseText(textOrFragmentOfElements,linkRegExp,function(url)
 			{
-				var a=document.createElement("a");
+				let a=document.createElement("a");
 				a.classList.add("messageLink")
 				a.target="_blank";
 				a.href=url;
@@ -168,8 +168,8 @@
 			if(event.key=='Enter')
 			{
 				//TODO history
-				var match=this.input.value.match(/^\/(\S+)\s*(.*)$/);
-				var detail={
+				let match=this.input.value.match(/^\/(\S+)\s*(.*)$/);
+				let detail={
 					command:"say",
 					value:null
 				};
@@ -189,13 +189,13 @@
 			}
 		}
 	});
-	var replaceText=function(text,regExp,replacer)
+	let replaceText=function(text,regExp,replacer)
 	{
-		var rtn=[];
-		var offset=0;
+		let rtn=[];
+		let offset=0;
 		text.replace(regExp,function(match)
 		{
-			var nextOffset=arguments[arguments.length-2];
+			let nextOffset=arguments[arguments.length-2];
 			if(nextOffset>offset)
 			{
 				rtn.push(document.createTextNode(text.slice(offset,nextOffset)));
@@ -214,11 +214,11 @@
 
 		if(typeof textOrFragmentOfElements == "string")
 		{
-			var fragment=document.createDocumentFragment();
-			var parsedChildren=replaceText(textOrFragmentOfElements,regExp,replacer);
+			let fragment=document.createDocumentFragment();
+			let parsedChildren=replaceText(textOrFragmentOfElements,regExp,replacer);
 			if(parsedChildren.length>0)
 			{
-				for(var parsedChild of parsedChildren) fragment.appendChild(parsedChild);
+				for(let parsedChild of parsedChildren) fragment.appendChild(parsedChild);
 			}
 			else
 			{
@@ -226,15 +226,15 @@
 			}
 			return fragment;
 		}
-		else for(var e of textOrFragmentOfElements.children)
+		else for(let e of textOrFragmentOfElements.children)
 		{
 			if(regExp.test(e.textContent))
 			{
-				var parsedChildren=replaceText(e.textContent,regExp,replacer)
+				let parsedChildren=replaceText(e.textContent,regExp,replacer)
 				if(parsedChildren.length>0)
 				{
 					while(e.firstChild) e.firstChild.remove();
-					for(var parsedChild of parsedChildren) e.appendChild(parsedChild);
+					for(let parsedChild of parsedChildren) e.appendChild(parsedChild);
 				}
 			}
 		}

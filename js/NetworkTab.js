@@ -7,8 +7,8 @@
 		messageUtils:"messageUtils"
 	});
 
-	var NetworkTab=µ.Class({
-		init:function(networkData)
+	let NetworkTab=µ.Class({
+		constructor:function(networkData)
 		{
 			this.tabs=SC.tabs();
 			this.tabs.classList.add("network");
@@ -16,7 +16,7 @@
 			this.addChat(SC.messageUtils.SERVER,new SC.Chat(networkData),true);
 			if (networkData)
 			{
-				for(var targetName in networkData.targets)
+				for(let targetName in networkData.targets)
 				{
 					this.getChat(targetName,networkData.targets[targetName]);
 				}
@@ -30,7 +30,7 @@
 		},
 		getChat:function(name,chatData)
 		{
-			var tab=this.tabs.getTabsByTitleContent(name||SC.messageUtils.SERVER)[0];
+			let tab=this.tabs.getTabsByTitleContent(name||SC.messageUtils.SERVER)[0];
 			if(!tab)
 			{
 				if(SC.messageUtils.isChannel(name)) return this.addChat(name,new SC.ChannelChat(chatData));
@@ -40,17 +40,17 @@
 		},
 		addMessage:function(message)
 		{
-			var chat=this.getChat(message.target);
+			let chat=this.getChat(message.target);
 			return chat.addMessage(message);
 		},
 		setTopic:function(channelName,topic)
 		{
-			var chat=this.getChat(channelName);
+			let chat=this.getChat(channelName);
 			chat.setTopic(topic);
 		},
 		setUserList:function(channelName,userList)
 		{
-			var chat=this.getChat(channelName);
+			let chat=this.getChat(channelName);
 			chat.setUserList(userList);
 		}
 	});
