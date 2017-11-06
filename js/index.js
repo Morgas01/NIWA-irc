@@ -80,12 +80,14 @@
 	window.addEventListener("beforeunload",function(){es.close()})
 	es.addEventListener("error",function(error)
 	{
+		µ.logger.info("error",event);
 		if(es.readyState==EventSource.CLOSED) alert("connection lost");
 		µ.logger.error(error);
 	});
 	es.addEventListener("ping",µ.logger.debug);
 	es.addEventListener("init",function(event)
 	{
+		µ.logger.info("init",event);
 		while(networkTabs.length>1) networkTabs.removeTab(0);
 		let data=JSON.parse(event.data);
 		let networks=[];
@@ -97,7 +99,24 @@
 	});
 	es.addEventListener("message",function(event)
 	{
+		µ.logger.info("message",event);
 		addMessage(JSON.parse(event.data));
+	});
+	es.addEventListener("userList",function(event)
+	{
+		µ.logger.info("userList",event);
+		let data=JSON.parse(event.data);
+		let network=getNetwork(data.server);
+		network.setUserList(data.channel,data.userList);
+
+	});
+	es.addEventListener("topic",function(event)
+	{
+		µ.logger.info("topic",event);
+		let data=JSON.parse(event.data);
+		let network=getNetwork(data.server);
+		network.setTopic(data.channel,data.topic);
+
 	});
 
 

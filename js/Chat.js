@@ -1,7 +1,8 @@
 (function(µ,SMOD,GMOD,HMOD,SC){
 
 	SC=SC({
-		Download:"NIWA-Download.Download"
+		Download:"NIWA-Download.Download",
+		InputHistory:"gui.InputHistory"
 	});
 
 	let formatTime=function(time)
@@ -33,7 +34,9 @@
 			this.input=document.createElement("input");
 			this.input.type="text";
 			this.container.appendChild(this.input);
-			this.container.addEventListener("keydown",e=>this.onKeyDown(e))
+			this.container.addEventListener("keydown",e=>this.onKeyDown(e));
+			this.history=new SC.InputHistory(undefined,{container:this.container});
+			this.history.register(this.input);
 
 			if (param)
 			{
@@ -165,9 +168,8 @@
 		},
 		onKeyDown:function(event)
 		{
-			if(event.key=='Enter')
+			if(event.key=='Enter'&&this.input.value!="")
 			{
-				//TODO history
 				let match=this.input.value.match(/^\/(\S+)\s*(.*)$/);
 				let detail={
 					command:"say",
@@ -185,6 +187,7 @@
 					detail:detail
 				}));
 
+				this.history.add(this.input.value);
 				this.input.value="";
 			}
 		}

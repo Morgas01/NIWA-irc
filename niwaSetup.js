@@ -4,7 +4,7 @@ let config=require("./rest/config");
 config.ready.then(function(config)
 {
 	require("./lib/xdccManager")// load manager
-	require("./lib/IrcManager")// load manager
+	let ircManager=require("./lib/IrcManager")// load manager
 
 	if(config.get("auto connect").get())
 	{
@@ -15,7 +15,7 @@ config.ready.then(function(config)
 
 			if(network.get("auto connect").get())
 			{
-				return SC.ircManager.connect(name);
+				return ircManager.connect(name);
 			}
 		}
 	}
