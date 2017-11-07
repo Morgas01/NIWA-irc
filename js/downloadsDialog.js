@@ -33,7 +33,7 @@
 				container.appendChild(table.element);
 
 			},{modal:true});
-			dialog.classList.add("downloadsDialog");
+			dialog.content.classList.add("downloadsDialog");
 		}
 		else dialog.appendTo(document.body);
 	};
