@@ -1,12 +1,9 @@
 {
 	"name": "NIWA-irc",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Morgas01/NIWA-irc.git"
-	},
-	"engine": {
-		"node": ">=4.0.0"
 	},
 	"dependencies": {
 		"irc": "^0.5.2",
