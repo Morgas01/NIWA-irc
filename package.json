@@ -1,5 +1,5 @@
 {
-	"name": "@niwa/irc",
+	"name": "niwa-irc",
 	"version": "0.8.3",
 	"description": "IRC application for NIWA",
 	"homepage": "https://github.com/Morgas01/NIWA-irc",
@@ -17,9 +17,6 @@
 	},
 	"peerDependencies": {
 		"niwa": "^0.8.3"
-	},
-	"publishConfig":{
-		"access":"public"
 	},
 	"niwa": {
 		"name":"irc",
