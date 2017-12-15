@@ -1,15 +1,28 @@
 {
-	"name": "NIWA-irc",
-	"version": "0.1.0",
+	"name": "@niwa/irc",
+	"version": "0.8.3",
+	"description": "IRC application for NIWA",
+	"homepage": "https://github.com/Morgas01/NIWA-irc",
+	"bugs": {
+		"url": "https://github.com/Morgas01/NIWA-irc/issues"
+	},
+	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Morgas01/NIWA-irc.git"
 	},
 	"dependencies": {
 		"irc": "^0.5.2",
-		"NIWA-Download": "git+https://github.com/Morgas01/NIWA-Download.git"
+		"niwa-download": "^0.8.3"
+	},
+	"peerDependencies": {
+		"niwa": "^0.8.3"
+	},
+	"publishConfig":{
+		"access":"public"
 	},
 	"niwa": {
+		"name":"irc",
 		"setup": "niwaSetup"
 	}
 }

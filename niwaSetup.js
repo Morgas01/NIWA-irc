@@ -1,4 +1,4 @@
-require("NIWA-Download").register().registerLess();
+require("niwa-download").register().registerLess();
 
 let config=require("./rest/config");
 config.ready.then(function(config)

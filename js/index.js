@@ -146,7 +146,7 @@
 		{
 			case "help":
 				requestAnimationFrame( // decouple keydown event for autofocus in help dialog
-					actions.help
+					globalActions.help
 				);
 				return;
 			case "msg":
