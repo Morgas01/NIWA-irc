@@ -1,6 +1,6 @@
 {
 	"name": "niwa-irc",
-	"version": "0.8.5",
+	"version": "0.8.6",
 	"description": "IRC application for NIWA",
 	"keywords":["niwa-app","irc","niwa","chat"],
 	"homepage": "https://github.com/Morgas01/NIWA-irc",
