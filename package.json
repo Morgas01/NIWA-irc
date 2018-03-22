@@ -1,6 +1,6 @@
 {
 	"name": "niwa-irc",
-	"version": "0.8.6",
+	"version": "0.8.7",
 	"description": "IRC application for NIWA",
 	"keywords":["niwa-app","irc","niwa","chat"],
 	"homepage": "https://github.com/Morgas01/NIWA-irc",
@@ -14,10 +14,10 @@
 	},
 	"dependencies": {
 		"irc": "^0.5.2",
-		"niwa-download": "^0.8.3"
+		"niwa-download": "^0.8.4"
 	},
 	"peerDependencies": {
-		"niwa": "^0.8.5"
+		"niwa": "^0.8.6"
 	},
 	"niwa": {
 		"name":"irc",
