@@ -62,7 +62,10 @@
 			row.appendChild(timestamp);
 			row.appendChild(username);
 			row.appendChild(text);
+
+			let isBottom=this.scrollContainer.scrollHeight-this.scrollContainer.scrollTop-this.scrollContainer.clientHeight<10;
 			this.messageTableBody.appendChild(row);
+			if(isBottom)this.scrollContainer.scrollTop=this.scrollContainer.scrollHeight;
 		},
 		parseMessage:function(message)
 		{
